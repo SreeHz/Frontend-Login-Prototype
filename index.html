@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Blockchain Login</h2>
+
+        <!-- Wallet Generation Section -->
+        <div id="wallet-section">
+            <h3>Create a New Wallet</h3>
+            <button id="generate-wallet-btn">Generate Wallet</button>
+            <p><strong>Public Key:</strong> <span id="public-key"></span></p>
+            <p><strong>Private Key:</strong> <span id="private-key"></span></p>
+            <p class="warning">⚠️ Save your Private Key safely. It will not be stored!</p>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login-section">
+            <h3>Login</h3>
+            <label for="pubKeyInput">Public Key:</label>
+            <input type="text" id="pubKeyInput" placeholder="Enter your Public Key">
+            
+            <label for="message">Message to Sign:</label>
+            <input type="text" id="message" value="Login to our app" readonly>
+            
+            <button id="sign-in-btn">Sign & Login</button>
+
+            <p id="login-status"></p>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="login.js"></script>
+
+</body>
+</html>
