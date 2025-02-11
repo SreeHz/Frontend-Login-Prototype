@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const wallet = await generateWallet();
         if (wallet) {
             publicKeyDisplay.textContent = wallet.publicKey;
-            privateKeyDisplay.textContent = wallet.privateKey;
+            privateKeyDisplay.textContent = wallet.privateKey || "Private key not available"; // ✅ Fix: Ensure private key is displayed
             keyId = wallet.keyId; // Store keyId for signing
 
             alert("Wallet created! Save your private key securely.");
@@ -24,15 +24,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+
     // 🚀 Login Function
     signInBtn.addEventListener("click", async () => {
-        const publicKey = pubKeyInput.value.trim();
+        let publicKey = pubKeyInput.value.trim();
         const message = "Login to our app";
 
         if (!publicKey || !keyId) {
             alert("Please enter your public key and generate a wallet first.");
             return;
         }
+
+        // ✅ Fix: Ensure public key format before sending
+        publicKey = publicKey.replace(/\n/g, "\\n");
 
         // Step 1: Sign the message using the private key (on the backend)
         const signed = await signMessage(keyId, message);

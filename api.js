@@ -51,10 +51,13 @@ async function signMessage(keyId, message) {
  */
 async function loginUser(publicKey, signedMessage) {
     try {
+        // ✅ Fix: Ensure proper formatting of public key before sending
+        const formattedPublicKey = publicKey.replace(/\n/g, "\\n");
+
         const response = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ publicKey, signedMessage })
+            body: JSON.stringify({ publicKey: formattedPublicKey, signedMessage })
         });
 
         if (!response.ok) throw new Error("Login failed");
@@ -65,3 +68,4 @@ async function loginUser(publicKey, signedMessage) {
         return null;
     }
 }
+
