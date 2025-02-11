@@ -15,22 +15,26 @@ document.addEventListener("DOMContentLoaded", function () {
     generateWalletBtn.addEventListener("click", async () => {
         const wallet = await generateWallet();
         if (wallet) {
-            publicKeyDisplay.textContent = wallet.publicKey;
+            // ✅ Fix: Preserve new lines in the Public Key
+            const formattedPublicKey = wallet.publicKey.replace(/\\n/g, "\n");
+    
+            publicKeyDisplay.textContent = formattedPublicKey;
             privateKeyDisplay.textContent = wallet.privateKey || "Private key not available";
-            keyId = wallet.keyId; 
-
-            // ✅ Auto-fill Public Key into the Login Input Box
-            pubKeyInput.value = wallet.publicKey;
-            pubKeyInput.style.backgroundColor = "#f0f0f0"; // Light gray to indicate readonly
-
+            keyId = wallet.keyId;
+    
+            // ✅ Auto-fill Public Key into Login Input (with correct formatting)
+            pubKeyInput.value = formattedPublicKey;
+            pubKeyInput.style.backgroundColor = "#f0f0f0"; // Indicate readonly
+    
             // ✅ Enable Login Button
-            signInBtn.disabled = false; 
-
+            signInBtn.disabled = false;
+    
             alert("Wallet created! You can now log in.");
         } else {
             alert("Failed to generate wallet. Try again.");
         }
     });
+    
 
     // 🚀 Login Function
     signInBtn.addEventListener("click", async () => {
