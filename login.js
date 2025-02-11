@@ -5,25 +5,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const publicKeyDisplay = document.getElementById("public-key");
     const privateKeyDisplay = document.getElementById("private-key");
-    const pubKeyInput = document.getElementById("pubKeyInput");
+    const pubKeyInput = document.getElementById("pubKeyInput"); // Login Input Box
     const loginStatus = document.getElementById("login-status");
 
     let keyId = null; // Store keyId after wallet generation
 
-    // 🚀 Generate Wallet Function
+    // 🚀 Generate Wallet Function (Auto-Paste Public Key in Login Box)
+    // Inside the generateWallet function
     generateWalletBtn.addEventListener("click", async () => {
         const wallet = await generateWallet();
         if (wallet) {
             publicKeyDisplay.textContent = wallet.publicKey;
-            privateKeyDisplay.textContent = wallet.privateKey || "Private key not available"; // ✅ Fix: Ensure private key is displayed
-            keyId = wallet.keyId; // Store keyId for signing
+            privateKeyDisplay.textContent = wallet.privateKey || "Private key not available";
+            keyId = wallet.keyId; 
 
-            alert("Wallet created! Save your private key securely.");
+            // ✅ Auto-fill Public Key into the Login Input Box
+            pubKeyInput.value = wallet.publicKey;
+            pubKeyInput.style.backgroundColor = "#f0f0f0"; // Light gray to indicate readonly
+
+            // ✅ Enable Login Button
+            signInBtn.disabled = false; 
+
+            alert("Wallet created! You can now log in.");
         } else {
             alert("Failed to generate wallet. Try again.");
         }
     });
-
 
     // 🚀 Login Function
     signInBtn.addEventListener("click", async () => {
@@ -31,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const message = "Login to our app";
 
         if (!publicKey || !keyId) {
-            alert("Please enter your public key and generate a wallet first.");
+            alert("Please generate a wallet before logging in.");
             return;
         }
 
