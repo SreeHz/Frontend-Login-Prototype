@@ -1,42 +1,34 @@
-// Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", function () {
     const generateWalletBtn = document.getElementById("generate-wallet-btn");
     const signInBtn = document.getElementById("sign-in-btn");
 
     const publicKeyDisplay = document.getElementById("public-key");
-    const privateKeyDisplay = document.getElementById("private-key");
-    const pubKeyInput = document.getElementById("pubKeyInput"); // Login Input Box
+    const pubKeyInput = document.getElementById("pubKeyInput"); // Login Input
     const loginStatus = document.getElementById("login-status");
 
-    let keyId = null; // Store keyId after wallet generation
+    let keyId = null;
 
-    // 🚀 Generate Wallet Function (Auto-Paste Public Key in Login Box)
-    // Inside the generateWallet function
+    // 🚀 Generate Wallet
     generateWalletBtn.addEventListener("click", async () => {
-        const wallet = await generateWallet();
-        if (wallet) {
-            // ✅ Fix: Preserve new lines in the Public Key
-            const formattedPublicKey = wallet.publicKey.replace(/\\n/g, "\n");
-    
-            publicKeyDisplay.textContent = formattedPublicKey;
-            privateKeyDisplay.textContent = wallet.privateKey || "Private key not available";
+        const response = await fetch("http://localhost:5000/generate-wallet", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const wallet = await response.json();
+        if (wallet.success) {
+            publicKeyDisplay.textContent = wallet.publicKey;
             keyId = wallet.keyId;
-    
-            // ✅ Auto-fill Public Key into Login Input (with correct formatting)
-            pubKeyInput.value = formattedPublicKey;
-            pubKeyInput.style.backgroundColor = "#f0f0f0"; // Indicate readonly
-    
-            // ✅ Enable Login Button
+            pubKeyInput.value = wallet.publicKey;
+            pubKeyInput.style.backgroundColor = "#f0f0f0";
             signInBtn.disabled = false;
-    
             alert("Wallet created! You can now log in.");
         } else {
-            alert("Failed to generate wallet. Try again.");
+            alert(wallet.error || "Failed to generate wallet.");
         }
     });
-    
 
-    // 🚀 Login Function
+    // 🚀 Sign Message & Login
     signInBtn.addEventListener("click", async () => {
         let publicKey = pubKeyInput.value.trim();
         const message = "Login to our app";
@@ -46,24 +38,33 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // ✅ Fix: Ensure public key format before sending
-        publicKey = publicKey.replace(/\n/g, "\\n");
+        // Sign the message
+        const signResponse = await fetch("http://localhost:5000/sign-message", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ keyId, message })
+        });
 
-        // Step 1: Sign the message using the private key (on the backend)
-        const signed = await signMessage(keyId, message);
-        if (!signed) {
+        const signedData = await signResponse.json();
+        if (!signedData.success) {
             alert("Failed to sign the message.");
             return;
         }
 
-        // Step 2: Send signed message to backend for login verification
-        const loginResponse = await loginUser(publicKey, signed.signedMessage);
-        if (loginResponse && loginResponse.success) {
+        // Send login request
+        const loginResponse = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ publicKey, signedMessage: signedData.signedMessage })
+        });
+
+        const loginResult = await loginResponse.json();
+        if (loginResult.success) {
             loginStatus.style.color = "green";
-            loginStatus.textContent = `✅ Login successful! IP: ${loginResponse.ip}, Device: ${loginResponse.deviceInfo}`;
+            loginStatus.textContent = `✅ Login successful! IP: ${loginResult.ip}, Device: ${loginResult.deviceInfo}`;
         } else {
             loginStatus.style.color = "red";
-            loginStatus.textContent = "❌ Login failed! Check your credentials.";
+            loginStatus.textContent = "❌ Login failed!";
         }
     });
 });
