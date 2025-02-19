@@ -1,66 +1,61 @@
-/* General Styles */
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
 }
 
-/* Container */
-.container {
-    background: white;
+/* Form container */
+form {
+    background: #fff;
     padding: 20px;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
     text-align: center;
 }
 
-/* Headings */
-h2, h3 {
-    color: #333;
+/* Labels */
+label {
+    display: block;
+    font-weight: bold;
+    margin: 10px 0 5px;
 }
 
-/* Button Styling */
+/* Input fields */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Login button */
 button {
-    background-color: #007bff;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 15px;
-    margin-top: 10px;
-    width: 100%;
-    cursor: pointer;
-    font-size: 16px;
     border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
 }
 
-/* Input Fields */
-input {
-    width: calc(100% - 20px);
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/* Warning Message */
-.warning {
-    color: red;
-    font-size: 12px;
-}
-
-/* Login Status */
-#login-status {
-    margin-top: 10px;
-    font-weight: bold;
-    color: green;
+/* Responsive Design */
+@media (max-width: 400px) {
+    form {
+        width: 90%;
+    }
 }
